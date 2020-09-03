@@ -1,4 +1,4 @@
-# Welcome to the Modern JavaScript, React & Node.js Class
+# Welcome to the React & Redux with TypeScript Class
 
 ![Accelebrate Logo](images/accelebrate-logo.png "Accelebrate Logo")
 
