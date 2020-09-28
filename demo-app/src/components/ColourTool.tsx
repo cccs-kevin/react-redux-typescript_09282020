@@ -7,6 +7,7 @@ export type ColourToolProps = {
 };
 
 export function ColourTool(props: ColourToolProps) {
+  const [colours, setColours] = useState([...props.colours]);
   // array destructuring
   // using the array as a tuple
   const [
@@ -28,7 +29,21 @@ export function ColourTool(props: ColourToolProps) {
     });
   };
 
-  console.log(colourForm);
+  const addColour = () => {
+    setColours([
+      ...colours,
+      {
+        name: colourForm.colourName,
+        hexcode: colourForm.colourHexcode,
+        id: Math.max(...colours.map((c) => c.id), 0) + 1,
+      },
+    ]);
+
+    setColourForm({
+      colourName: "",
+      colourHexcode: "",
+    });
+  };
 
   return (
     <>
@@ -36,7 +51,7 @@ export function ColourTool(props: ColourToolProps) {
         <h1>Colour Tool</h1>
       </header>
       <ul>
-        {props.colours.map((colour) => (
+        {colours.map((colour) => (
           <li key={colour.id}>{colour.name}</li>
         ))}
       </ul>
@@ -61,6 +76,9 @@ export function ColourTool(props: ColourToolProps) {
             onChange={change}
           />
         </div>
+        <button type="button" onClick={addColour}>
+          Add Colour
+        </button>
       </form>
     </>
   );
