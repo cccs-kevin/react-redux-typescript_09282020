@@ -2,29 +2,18 @@ import React from "react";
 
 import { Colour } from "../models/colour";
 
-export function ColourTool() {
-  const colours: Colour[] = [
-    { id: 1, name: "pink", hexcode: "ffc0cb" },
-    { id: 2, name: "blue", hexcode: "0000ff" },
-    { id: 3, name: "purple", hexcode: "800080" },
-    { id: 4, name: "cyan", hexcode: "00ffff" },
-  ];
+export type ColourToolProps = {
+  colours: Colour[];
+};
 
-  // const colourListItems: React.ReactNode[] = [];
-
-  // colours.forEach((colour) => {
-  //   colourListItems.push(<li>{colour.name}</li>);
-  // });
-
-  // const colourListItems = colours.map((colour) => <li>{colour.name}</li>);
-
+export function ColourTool(props: ColourToolProps) {
   return (
     <>
       <header>
         <h1>Colour Tool</h1>
       </header>
       <ul>
-        {colours.map((colour) => (
+        {props.colours.map((colour) => (
           <li key={colour.id}>{colour.name}</li>
         ))}
       </ul>
