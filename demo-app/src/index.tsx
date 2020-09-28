@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { HelloWorld } from "./components/HelloWorld";
+import { ColourTool } from "./components/ColourTool";
 import { CarTool } from "./components/CarTool";
 
 ReactDOM.render(
   <>
-    <HelloWorld />
+    <ColourTool />
     <CarTool />
   </>,
   document.querySelector("#root")
