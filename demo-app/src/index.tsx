@@ -14,6 +14,7 @@ const colourList: Colour[] = [
 
 ReactDOM.render(
   <>
+    {/* React.createElement(ColourTool, Object.freeze({ colours: colourList })) */}
     <ColourTool colours={colourList} />
     <CarTool />
   </>,
