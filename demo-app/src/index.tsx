@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import { Colour } from "./models/colour";
+import { Car } from "./models/car";
 import { ColourTool } from "./components/ColourTool";
 import { CarTool } from "./components/CarTool";
 
@@ -12,11 +13,23 @@ const colourList: Colour[] = [
   { id: 4, name: "cyan", hexcode: "00ffff" },
 ];
 
+const carList: Car[] = [
+  {
+    id: 1,
+    make: "Ford",
+    model: "Fusion Hybrid",
+    year: 2020,
+    color: "blue",
+    price: 45000,
+  },
+  { id: 2, make: "Tesla", model: "S", year: 2019, color: "red", price: 120000 },
+];
+
 ReactDOM.render(
   <>
     {/* React.createElement(ColourTool, Object.freeze({ colours: colourList })) */}
     <ColourTool colours={colourList} />
-    <CarTool />
+    <CarTool cars={carList} />
   </>,
   document.querySelector("#root")
 );

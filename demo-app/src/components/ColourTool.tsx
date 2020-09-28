@@ -2,6 +2,9 @@ import React, { useState, ChangeEvent } from "react";
 
 import { Colour } from "../models/colour";
 
+import { ToolHeader } from "./ToolHeader";
+import { ColourList } from "./ColourList";
+
 export type ColourToolProps = {
   colours: Colour[];
 };
@@ -47,14 +50,8 @@ export function ColourTool(props: ColourToolProps) {
 
   return (
     <>
-      <header>
-        <h1>Colour Tool</h1>
-      </header>
-      <ul>
-        {colours.map((colour) => (
-          <li key={colour.id}>{colour.name}</li>
-        ))}
-      </ul>
+      <ToolHeader headerText="Color Tool" />
+      <ColourList colours={colours} />
       <form>
         <div>
           <label htmlFor="colour-name-input">Colour Name:</label>
