@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
-import { Car, NewCar, CarKeys } from "../models/car";
+import {
+  Car,
+  NewCar,
+  CarKeys,
+  OrderDirection,
+  CarsOrder,
+  ORDER_ASC,
+  ORDER_DESC,
+} from "../models/car";
 
 import { ToolHeader } from "./ToolHeader";
 import { CarTable } from "./CarTable";
@@ -12,48 +20,60 @@ export interface CarToolProps {
 
 export function CarTool(props: CarToolProps) {
   const [cars, setCars] = useState<Car[]>([...props.cars]);
+  const [carsOrder, setCarsOrder] = useState<CarsOrder>({
+    column: "id",
+    direction: ORDER_ASC,
+  });
 
   const addCar = (newCar: NewCar) => {
-    // setCars(
-    //   cars.concat({
-    //     ...newCar,
-    //     id: Math.max(...(cars.map((c) => c.id) as []), 0) + 1,
-    //   })
-    // );
+    setCars(
+      cars.concat({
+        ...newCar,
+        id: Math.max(...(cars.map((c) => c.id) as []), 0) + 1,
+      })
+    );
   };
 
   const deleteCar = (carId: number) => {
     setCars(cars.filter((c) => c.id !== carId));
   };
 
-  const car: Car = {
-    id: 1,
-    make: "Ford",
-    model: "T",
-    year: 1920,
-    color: "black",
-    price: 400,
+  const sortCars = (column: CarKeys) => {
+    setCarsOrder({
+      column,
+      direction:
+        column !== carsOrder.column
+          ? ORDER_ASC
+          : carsOrder.direction === ORDER_DESC
+          ? ORDER_ASC
+          : ORDER_DESC,
+    });
   };
 
-  type CarCol = {
-    id: number;
-    name: CarKeys;
+  const orderCars = (cars: Car[], carsOrder: CarsOrder) => {
+    return cars.concat().sort((a: Car, b: Car) => {
+      const left = String(a[carsOrder.column]).toUpperCase();
+      const right = String(b[carsOrder.column]).toUpperCase();
+
+      if (left < right) {
+        return carsOrder.direction === "asc" ? -1 : 1;
+      } else if (left > right) {
+        return carsOrder.direction === "asc" ? 1 : -1;
+      } else {
+        return 0;
+      }
+    });
   };
-
-  const cols: CarCol[] = [{ id: 1, name: "make" }];
-
-  cols.forEach((col) => {
-    console.log(car[col.name]);
-  });
-
-  (Object.keys(car) as CarKeys[]).forEach((key) => {
-    console.log(car[key]);
-  });
 
   return (
     <>
       <ToolHeader headerText="Car Tool" />
-      <CarTable cars={cars} onDeleteCar={deleteCar} />
+      <CarTable
+        cars={orderCars(cars, carsOrder)}
+        carsOrder={carsOrder}
+        onDeleteCar={deleteCar}
+        onSortCars={sortCars}
+      />
       <CarForm buttonText="Add Car" onSubmitCar={addCar} />
     </>
   );

@@ -1,12 +1,14 @@
 import React from "react";
 
-import { Car } from "../models/car";
+import { Car, CarsOrder, CarKeys } from "../models/car";
 
 import { CarViewRow } from "./CarViewRow";
 
 export type CarTableProps = {
   cars: Car[];
+  carsOrder: CarsOrder;
   onDeleteCar: (carId: number) => void;
+  onSortCars: (carProp: CarKeys) => void;
 };
 
 export function CarTable(props: CarTableProps) {
@@ -14,12 +16,48 @@ export function CarTable(props: CarTableProps) {
     <table>
       <thead>
         <tr>
-          <th>Id</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>Year</th>
-          <th>Color</th>
-          <th>Price</th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("id")}>
+              Id
+              {props.carsOrder.column === "id" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("make")}>
+              Make
+              {props.carsOrder.column === "make" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("model")}>
+              Model
+              {props.carsOrder.column === "model" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("year")}>
+              Year
+              {props.carsOrder.column === "year" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("color")}>
+              Color
+              {props.carsOrder.column === "color" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
+          <th>
+            <button type="button" onClick={() => props.onSortCars("price")}>
+              Price
+              {props.carsOrder.column === "price" &&
+                "(" + props.carsOrder.direction + ")"}
+            </button>
+          </th>
           <th>Actions</th>
         </tr>
       </thead>
