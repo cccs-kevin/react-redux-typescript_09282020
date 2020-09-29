@@ -7,4 +7,8 @@ export interface Car {
   price: number;
 }
 
+export type CarKeys = keyof Car;
+
 export type NewCar = Omit<Car, "id">;
+
+export type NewCarKeys = keyof NewCar;
