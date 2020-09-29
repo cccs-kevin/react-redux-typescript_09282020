@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Colour, NewColour } from "../models/colour";
 
 import { ToolHeader } from "./ToolHeader";
-import { ColourList } from "./ColourList";
+import { ItemList } from "./ItemList";
 import { ColourForm } from "./ColourForm";
 
 export type ColourToolProps = {
@@ -26,7 +26,11 @@ export function ColourTool(props: ColourToolProps) {
   return (
     <>
       <ToolHeader headerText="Color Tool" />
-      <ColourList colours={colours} />
+      <ItemList
+        items={colours}
+        keyFn={(item) => item.id}
+        contentFn={(item) => item.name}
+      />
       <ColourForm buttonText="Add Colour" onSubmitColour={addColour} />
     </>
   );

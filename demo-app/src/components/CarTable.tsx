@@ -4,12 +4,7 @@ import { Car, CarsOrder, CarKeys } from "../models/car";
 
 import { CarViewRow } from "./CarViewRow";
 import { CarEditRow } from "./CarEditRow";
-
-export type CarTableCol = {
-  id: number;
-  caption: string;
-  column: CarKeys;
-};
+import { CarTableCol } from "../models/carTable";
 
 export type CarTableProps = {
   cars: Car[];
@@ -31,7 +26,16 @@ const carTableCols: CarTableCol[] = [
   { id: 6, caption: "Price", column: "price" },
 ];
 
-export function CarTable(props: CarTableProps) {
+export function CarTable({
+  cars,
+  editCarId,
+  carsOrder,
+  onEditCar: editCar,
+  onDeleteCar: deleteCar,
+  onSaveCar: saveCar,
+  onCancelCar: cancelCar,
+  onSortCars: sortCars,
+}: CarTableProps) {
   return (
     <table>
       <thead>
@@ -40,11 +44,11 @@ export function CarTable(props: CarTableProps) {
             <th key={carTableCol.id}>
               <button
                 type="button"
-                onClick={() => props.onSortCars(carTableCol.column)}
+                onClick={() => sortCars(carTableCol.column)}
               >
                 {carTableCol.caption}
-                {props.carsOrder.column === carTableCol.column &&
-                  "(" + props.carsOrder.direction + ")"}
+                {carsOrder.column === carTableCol.column &&
+                  "(" + carsOrder.direction + ")"}
               </button>
             </th>
           ))}
@@ -52,20 +56,20 @@ export function CarTable(props: CarTableProps) {
         </tr>
       </thead>
       <tbody>
-        {props.cars.map((car) =>
-          car.id === props.editCarId ? (
+        {cars.map((car) =>
+          car.id === editCarId ? (
             <CarEditRow
               key={car.id}
               car={car}
-              onSaveCar={props.onSaveCar}
-              onCancelCar={props.onCancelCar}
+              onSaveCar={saveCar}
+              onCancelCar={cancelCar}
             />
           ) : (
             <CarViewRow
               key={car.id}
               car={car}
-              onEditCar={props.onEditCar}
-              onDeleteCar={props.onDeleteCar}
+              onEditCar={editCar}
+              onDeleteCar={deleteCar}
             />
           )
         )}

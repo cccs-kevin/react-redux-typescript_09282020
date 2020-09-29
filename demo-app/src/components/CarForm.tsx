@@ -3,11 +3,15 @@ import React, { useState, ChangeEvent } from "react";
 import { NewCar } from "../models/car";
 
 export type CarFormProps = {
-  buttonText: string;
+  buttonText?: string;
   onSubmitCar: (car: NewCar) => void;
 };
 
-export function CarForm(props: CarFormProps) {
+export function CarForm({ buttonText, onSubmitCar }: CarFormProps) {
+  // const buttonText = props.buttonText;
+  // const onSubmitCar = props.onSubmitCar;
+  // const { buttonText, onSubmitCar } = props;
+
   const [carForm, setCarForm] = useState({
     make: "",
     model: "",
@@ -24,7 +28,7 @@ export function CarForm(props: CarFormProps) {
   };
 
   const submitCar = () => {
-    props.onSubmitCar({ ...carForm });
+    onSubmitCar({ ...carForm });
 
     setCarForm({
       make: "",
@@ -88,8 +92,12 @@ export function CarForm(props: CarFormProps) {
         />
       </div>
       <button type="button" onClick={submitCar}>
-        {props.buttonText}
+        {buttonText}
       </button>
     </form>
   );
 }
+
+CarForm.defaultProps = {
+  buttonText: "Submit Colour",
+};
