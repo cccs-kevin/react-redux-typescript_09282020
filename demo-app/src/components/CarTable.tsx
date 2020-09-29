@@ -17,6 +17,8 @@ export type CarTableProps = {
   carsOrder: CarsOrder;
   onEditCar: (carId: number) => void;
   onDeleteCar: (carId: number) => void;
+  onSaveCar: (car: Car) => void;
+  onCancelCar: () => void;
   onSortCars: (carProp: CarKeys) => void;
 };
 
@@ -52,7 +54,12 @@ export function CarTable(props: CarTableProps) {
       <tbody>
         {props.cars.map((car) =>
           car.id === props.editCarId ? (
-            <CarEditRow key={car.id} car={car} />
+            <CarEditRow
+              key={car.id}
+              car={car}
+              onSaveCar={props.onSaveCar}
+              onCancelCar={props.onCancelCar}
+            />
           ) : (
             <CarViewRow
               key={car.id}

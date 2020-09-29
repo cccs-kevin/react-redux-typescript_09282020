@@ -4,6 +4,8 @@ import { Car } from "../models/car";
 
 export type CarEditRowProps = {
   car: Car;
+  onSaveCar: (car: Car) => void;
+  onCancelCar: () => void;
 };
 
 export function CarEditRow(props: CarEditRowProps) {
@@ -19,6 +21,13 @@ export function CarEditRow(props: CarEditRowProps) {
     setCarForm({
       ...carForm,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const saveCar = () => {
+    props.onSaveCar({
+      ...carForm,
+      id: props.car.id,
     });
   };
 
@@ -61,10 +70,10 @@ export function CarEditRow(props: CarEditRowProps) {
         />
       </td>
       <td>
-        <button type="button" onClick={() => null}>
+        <button type="button" onClick={saveCar}>
           Save
         </button>
-        <button type="button" onClick={() => null}>
+        <button type="button" onClick={props.onCancelCar}>
           Cancel
         </button>
       </td>

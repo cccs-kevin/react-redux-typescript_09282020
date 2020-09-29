@@ -32,10 +32,24 @@ export function CarTool(props: CarToolProps) {
         id: Math.max(...(cars.map((c) => c.id) as []), 0) + 1,
       })
     );
+    setEditCarId(-1);
+  };
+
+  const saveCar = (car: Car) => {
+    const newCars = [...cars];
+    const carIndex = newCars.findIndex((c) => c.id === car.id);
+    newCars[carIndex] = car;
+    setCars(newCars);
+    setEditCarId(-1);
   };
 
   const deleteCar = (carId: number) => {
     setCars(cars.filter((c) => c.id !== carId));
+    setEditCarId(-1);
+  };
+
+  const cancelCar = () => {
+    setEditCarId(-1);
   };
 
   const sortCars = (column: CarKeys) => {
@@ -74,6 +88,8 @@ export function CarTool(props: CarToolProps) {
         carsOrder={carsOrder}
         onEditCar={setEditCarId}
         onDeleteCar={deleteCar}
+        onSaveCar={saveCar}
+        onCancelCar={cancelCar}
         onSortCars={sortCars}
       />
       <CarForm buttonText="Add Car" onSubmitCar={addCar} />
