@@ -4,7 +4,6 @@ import {
   Car,
   NewCar,
   CarKeys,
-  OrderDirection,
   CarsOrder,
   ORDER_ASC,
   ORDER_DESC,
@@ -56,9 +55,9 @@ export function CarTool(props: CarToolProps) {
       const right = String(b[carsOrder.column]).toUpperCase();
 
       if (left < right) {
-        return carsOrder.direction === "asc" ? -1 : 1;
+        return carsOrder.direction === ORDER_ASC ? -1 : 1;
       } else if (left > right) {
-        return carsOrder.direction === "asc" ? 1 : -1;
+        return carsOrder.direction === ORDER_ASC ? 1 : -1;
       } else {
         return 0;
       }

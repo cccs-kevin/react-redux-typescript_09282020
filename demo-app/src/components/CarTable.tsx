@@ -16,12 +16,10 @@ export function CarTable(props: CarTableProps) {
     <table>
       <thead>
         <tr>
-          <th>
-            <button type="button" onClick={() => props.onSortCars("id")}>
-              Id
-              {props.carsOrder.column === "id" &&
-                "(" + props.carsOrder.direction + ")"}
-            </button>
+          <th onClick={() => props.onSortCars("id")}>
+            Id
+            {props.carsOrder.column === "id" &&
+              "(" + props.carsOrder.direction + ")"}
           </th>
           <th>
             <button type="button" onClick={() => props.onSortCars("make")}>
