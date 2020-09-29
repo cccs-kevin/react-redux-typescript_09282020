@@ -3,3 +3,5 @@ export type Colour = {
   name: string;
   hexcode: string;
 };
+
+export type NewColour = Omit<Colour, "id">;
