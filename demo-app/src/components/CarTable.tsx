@@ -3,6 +3,7 @@ import React from "react";
 import { Car, CarsOrder, CarKeys } from "../models/car";
 
 import { CarViewRow } from "./CarViewRow";
+import { CarEditRow } from "./CarEditRow";
 
 export type CarTableCol = {
   id: number;
@@ -12,7 +13,9 @@ export type CarTableCol = {
 
 export type CarTableProps = {
   cars: Car[];
+  editCarId: number;
   carsOrder: CarsOrder;
+  onEditCar: (carId: number) => void;
   onDeleteCar: (carId: number) => void;
   onSortCars: (carProp: CarKeys) => void;
 };
@@ -47,9 +50,18 @@ export function CarTable(props: CarTableProps) {
         </tr>
       </thead>
       <tbody>
-        {props.cars.map((car) => (
-          <CarViewRow key={car.id} car={car} onDeleteCar={props.onDeleteCar} />
-        ))}
+        {props.cars.map((car) =>
+          car.id === props.editCarId ? (
+            <CarEditRow key={car.id} car={car} />
+          ) : (
+            <CarViewRow
+              key={car.id}
+              car={car}
+              onEditCar={props.onEditCar}
+              onDeleteCar={props.onDeleteCar}
+            />
+          )
+        )}
       </tbody>
     </table>
   );
