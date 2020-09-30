@@ -1,25 +1,47 @@
-import React from "react";
+import React  from "react";
 import ReactDOM from "react-dom";
+import { Action, Reducer } from "redux";
 
-import { Colour } from "./models/colour";
-import { ColourTool } from "./components/ColourTool";
-import { CarToolStoreProvider } from "./contexts/carToolStoreContext";
-import { CarTool } from "./components/CarTool";
+const ADD_ACTION = "ADD";
+const SUBTRACT_ACTION = "SUBTRACT";
 
-const colourList: Colour[] = [
-  { id: 1, name: "pink", hexcode: "ffc0cb" },
-  { id: 2, name: "blue", hexcode: "0000ff" },
-  { id: 3, name: "purple", hexcode: "800080" },
-  { id: 4, name: "cyan", hexcode: "00ffff" },
-];
+interface AddAction extends Action<string> {
+  payload: {
+    value: number;
+  };
+}
 
-ReactDOM.render(
-  <>
-    {/* React.createElement(ColourTool, Object.freeze({ colours: colourList })) */}
-    <ColourTool colours={colourList} />
-    <CarToolStoreProvider>
-      <CarTool />
-    </CarToolStoreProvider>
-  </>,
-  document.querySelector("#root")
-);
+type CreateAddAction = (value: number) => AddAction;
+
+const createAddAction: CreateAddAction = (value: number) => ({
+  type: ADD_ACTION,
+  payload: { value },
+});
+
+interface SubtractAction extends Action<string> {
+  payload: {
+    value: number;
+  };
+}
+
+type CreateSubtractAction = (value: number) => SubtractAction;
+
+const createSubtractAction: CreateSubtractAction = (value: number) => ({
+  type: SUBTRACT_ACTION,
+  payload: { value },
+});
+
+type CalcToolAppState = {
+  result: number;
+};
+
+type CalcToolActions = AddAction | SubtractAction;
+
+// reducers are pure functions
+// 1. 
+const calcToolReducer: Reducer<CalcToolAppState, CalcToolActions> = (
+  state = { result: 0 },
+  action
+) => {
+  return state;
+};
