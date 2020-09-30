@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Colour, NewColour } from "../models/colour";
+import { Colour } from "../models/colour";
 
+import { useList } from "../hooks/useList";
 import { ToolHeader } from "./ToolHeader";
 import { ItemList } from "./ItemList";
 import { ColourForm } from "./ColourForm";
@@ -11,17 +12,7 @@ export type ColourToolProps = {
 };
 
 export function ColourTool(props: ColourToolProps) {
-  const [colours, setColours] = useState([...props.colours]);
-
-  const addColour = (newColour: NewColour) => {
-    setColours([
-      ...colours,
-      {
-        ...newColour,
-        id: Math.max(...colours.map((c) => c.id), 0) + 1,
-      },
-    ]);
-  };
+  const [colours, appendColour] = useList([...props.colours]);
 
   return (
     <>
@@ -31,7 +22,7 @@ export function ColourTool(props: ColourToolProps) {
         keyFn={(item) => item.id}
         contentFn={(item) => item.name}
       />
-      <ColourForm buttonText="Add Colour" onSubmitColour={addColour} />
+      <ColourForm buttonText="Add Colour" onSubmitColour={appendColour} />
     </>
   );
 }
