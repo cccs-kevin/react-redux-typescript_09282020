@@ -99,7 +99,7 @@ const CalcTool = ({ result, onAdd, onSubtract }: CalcToolProps) => {
 const CalcToolContainer = () => {
   const result = useSelector<CalcToolAppState, number>((state) => state.result);
 
-  // boundActions.onAdd: (value: number) => { const a = dispatch(createAddAction(value)),
+  // boundActions.onAdd: (value: number) => dispatch(createAddAction(value)),
   // boundActions.onSubtract: (value: number) => dispatch(createSubtractAction(value)),
 
   const boundActions = bindActionCreators(
