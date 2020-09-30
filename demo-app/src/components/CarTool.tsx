@@ -1,18 +1,12 @@
 import React from "react";
 
-import { Car } from "../models/car";
-
 import { ToolHeader } from "./ToolHeader";
 import { CarTable } from "./CarTable";
 import { CarForm } from "./CarForm";
 
-import { useCarToolStore } from "../hooks/useCarToolStore";
+import { useCarToolStoreConsumer } from "../contexts/carToolStoreContext";
 
-export interface CarToolProps {
-  cars: Car[];
-}
-
-export function CarTool(props: CarToolProps) {
+export function CarTool() {
   const {
     sortedCars,
     editCarId,
@@ -23,7 +17,7 @@ export function CarTool(props: CarToolProps) {
     sortCars,
     editCar,
     cancelCar,
-  } = useCarToolStore([...props.cars]);
+  } = useCarToolStoreConsumer();
   return (
     <>
       <ToolHeader headerText="Car Tool" />
