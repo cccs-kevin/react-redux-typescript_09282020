@@ -1,6 +1,7 @@
-import React, { useState, ChangeEvent } from "react";
+import React from "react";
 
 import { NewCar } from "../models/car";
+import { useForm } from "../hooks/useForm";
 
 export type CarFormProps = {
   buttonText?: string;
@@ -8,11 +9,7 @@ export type CarFormProps = {
 };
 
 export function CarForm({ buttonText, onSubmitCar }: CarFormProps) {
-  // const buttonText = props.buttonText;
-  // const onSubmitCar = props.onSubmitCar;
-  // const { buttonText, onSubmitCar } = props;
-
-  const [carForm, setCarForm] = useState({
+  const [carForm, change, resetCarForm] = useForm({
     make: "",
     model: "",
     year: 1900,
@@ -20,23 +17,10 @@ export function CarForm({ buttonText, onSubmitCar }: CarFormProps) {
     price: 0,
   });
 
-  const change = (e: ChangeEvent<HTMLInputElement>) => {
-    setCarForm({
-      ...carForm,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const submitCar = () => {
     onSubmitCar({ ...carForm });
 
-    setCarForm({
-      make: "",
-      model: "",
-      year: 1900,
-      color: "",
-      price: 0,
-    });
+    resetCarForm();
   };
 
   return (

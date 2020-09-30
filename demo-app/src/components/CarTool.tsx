@@ -9,6 +9,7 @@ import {
   ORDER_DESC,
 } from "../models/car";
 
+import { useCarList } from "../hooks/useCarList";
 import { ToolHeader } from "./ToolHeader";
 import { CarTable } from "./CarTable";
 import { CarForm } from "./CarForm";
@@ -19,7 +20,7 @@ export interface CarToolProps {
 }
 
 export function CarTool(props: CarToolProps) {
-  const [cars, setCars] = useState<Car[]>([...props.cars]);
+  const [cars, appendCar, replaceCar, removeCar] = useCarList([...props.cars]);
   const [carsOrder, setCarsOrder] = useState<CarsOrder>({
     column: "id",
     direction: ORDER_ASC,
@@ -27,25 +28,17 @@ export function CarTool(props: CarToolProps) {
   const [editCarId, setEditCarId] = useState(-1);
 
   const addCar = (newCar: NewCar) => {
-    setCars(
-      cars.concat({
-        ...newCar,
-        id: Math.max(...(cars.map((c) => c.id) as []), 0) + 1,
-      })
-    );
+    appendCar(newCar);
     setEditCarId(-1);
   };
 
   const saveCar = (car: Car) => {
-    const newCars = [...cars];
-    const carIndex = newCars.findIndex((c) => c.id === car.id);
-    newCars[carIndex] = car;
-    setCars(newCars);
+    replaceCar(car);
     setEditCarId(-1);
   };
 
   const deleteCar = (carId: number) => {
-    setCars(cars.filter((c) => c.id !== carId));
+    removeCar(carId);
     setEditCarId(-1);
   };
 

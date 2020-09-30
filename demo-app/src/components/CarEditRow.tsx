@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 
 import { Car } from "../models/car";
+import { useForm } from "../hooks/useForm";
 
 export type CarEditRowProps = {
   car: Car;
@@ -8,32 +9,25 @@ export type CarEditRowProps = {
   onCancelCar: () => void;
 };
 
-export function CarEditRow(props: CarEditRowProps) {
-  const [carForm, setCarForm] = useState({
-    make: props.car.make,
-    model: props.car.model,
-    year: props.car.year,
-    color: props.car.color,
-    price: props.car.price,
+export function CarEditRow({ car, onSaveCar, onCancelCar }: CarEditRowProps) {
+  const [carForm, change] = useForm({
+    make: car.make,
+    model: car.model,
+    year: car.year,
+    color: car.color,
+    price: car.price,
   });
 
-  const change = (e: ChangeEvent<HTMLInputElement>) => {
-    setCarForm({
-      ...carForm,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   const saveCar = () => {
-    props.onSaveCar({
+    onSaveCar({
       ...carForm,
-      id: props.car.id,
+      id: car.id,
     });
   };
 
   return (
     <tr>
-      <td>{props.car.id}</td>
+      <td>{car.id}</td>
       <td>
         <input type="text" name="make" value={carForm.make} onChange={change} />
       </td>
@@ -73,7 +67,7 @@ export function CarEditRow(props: CarEditRowProps) {
         <button type="button" onClick={saveCar}>
           Save
         </button>
-        <button type="button" onClick={props.onCancelCar}>
+        <button type="button" onClick={onCancelCar}>
           Cancel
         </button>
       </td>
