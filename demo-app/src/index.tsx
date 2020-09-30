@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Action, Reducer, createStore } from "redux";
+import { Action, Reducer, createStore, bindActionCreators } from "redux";
+import { useSelector, useDispatch, Provider } from "react-redux";
 
 const ADD_ACTION = "ADD";
 const SUBTRACT_ACTION = "SUBTRACT";
@@ -63,3 +64,58 @@ const calcToolReducer: Reducer<CalcToolAppState, CalcToolActions> = (
 };
 
 const calcToolStore = createStore(calcToolReducer);
+
+type CalcToolProps = {
+  result: number;
+  onAdd: (value: number) => void;
+  onSubtract: (value: number) => void;
+};
+
+const CalcTool = ({ result, onAdd, onSubtract }: CalcToolProps) => {
+  const [numInput, setNumInput] = useState(0);
+  return (
+    <form>
+      <div>Result: {result}</div>
+      <div>
+        Num Input:{" "}
+        <input
+          type="number"
+          value={numInput}
+          onChange={(e) => setNumInput(Number(e.target.value))}
+        />
+      </div>
+      <fieldset>
+        <button type="button" onClick={() => onAdd(numInput)}>
+          +
+        </button>
+        <button type="button" onClick={() => onSubtract(numInput)}>
+          -
+        </button>
+      </fieldset>
+    </form>
+  );
+};
+
+const CalcToolContainer = () => {
+  const result = useSelector<CalcToolAppState, number>((state) => state.result);
+
+  // boundActions.onAdd: (value: number) => { const a = dispatch(createAddAction(value)),
+  // boundActions.onSubtract: (value: number) => dispatch(createSubtractAction(value)),
+
+  const boundActions = bindActionCreators(
+    {
+      onAdd: createAddAction,
+      onSubtract: createSubtractAction,
+    },
+    useDispatch() // return a dispatch function
+  );
+
+  return <CalcTool result={result} {...boundActions} />;
+};
+
+ReactDOM.render(
+  <Provider store={calcToolStore}>
+    <CalcToolContainer />
+  </Provider>,
+  document.querySelector("#root")
+);
