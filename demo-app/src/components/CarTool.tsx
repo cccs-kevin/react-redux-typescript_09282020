@@ -27,22 +27,22 @@ export function CarTool(props: CarToolProps) {
   });
   const [editCarId, setEditCarId] = useState(-1);
 
-  const addCar = (newCar: NewCar) => {
-    appendCar(newCar);
-    setEditCarId(-1);
+  const addCar = (car: NewCar) => {
+    appendCar(car);
+    hideEditRow();
   };
 
   const saveCar = (car: Car) => {
     replaceCar(car);
-    setEditCarId(-1);
+    hideEditRow();
   };
 
   const deleteCar = (carId: number) => {
     removeCar(carId);
-    setEditCarId(-1);
+    hideEditRow();
   };
 
-  const cancelCar = () => {
+  const hideEditRow = () => {
     setEditCarId(-1);
   };
 
@@ -68,7 +68,7 @@ export function CarTool(props: CarToolProps) {
         onEditCar={setEditCarId}
         onDeleteCar={deleteCar}
         onSaveCar={saveCar}
-        onCancelCar={cancelCar}
+        onCancelCar={hideEditRow}
         onSortCars={sortCars}
       />
       <CarForm buttonText="Add Car" onSubmitCar={addCar} />
