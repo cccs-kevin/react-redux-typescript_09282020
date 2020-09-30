@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 
 import { NewColour } from "../models/colour";
+import { useForm } from "../hooks/useForm";
 
 export type ColourFormProps = {
   buttonText: string;
@@ -8,27 +9,17 @@ export type ColourFormProps = {
 };
 
 export function ColourForm(props: ColourFormProps) {
-  const [colourForm, setColourForm] = useState({
+  const [colourForm, change, resetColourForm] = useForm({
     name: "",
     hexcode: "",
   });
-
-  const change = (e: ChangeEvent<HTMLInputElement>) => {
-    setColourForm({
-      ...colourForm,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const submitColour = () => {
     props.onSubmitColour({
       ...colourForm,
     });
 
-    setColourForm({
-      name: "",
-      hexcode: "",
-    });
+    resetColourForm();
   };
 
   return (
