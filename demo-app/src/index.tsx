@@ -5,6 +5,8 @@ import { useSelector, useDispatch, Provider } from "react-redux";
 
 const ADD_ACTION = "ADD";
 const SUBTRACT_ACTION = "SUBTRACT";
+const MULTIPLY_ACTION = "MULTIPLY";
+const DIVIDE_ACTION = "DIVIDE";
 
 interface AddAction extends Action<string> {
   payload: {
@@ -32,11 +34,41 @@ const createSubtractAction: CreateSubtractAction = (value: number) => ({
   payload: { value },
 });
 
+interface MultiplyAction extends Action<string> {
+  payload: {
+    value: number;
+  };
+}
+
+type CreateMultiplyAction = (value: number) => MultiplyAction;
+
+const createMultiplyAction: CreateMultiplyAction = (value: number) => ({
+  type: MULTIPLY_ACTION,
+  payload: { value },
+});
+
+interface DivideAction extends Action<string> {
+  payload: {
+    value: number;
+  };
+}
+
+type CreateDivideAction = (value: number) => DivideAction;
+
+const createDivideAction: CreateDivideAction = (value: number) => ({
+  type: DIVIDE_ACTION,
+  payload: { value },
+});
+
 type CalcToolAppState = {
   result: number;
 };
 
-type CalcToolActions = AddAction | SubtractAction;
+type CalcToolActions =
+  | AddAction
+  | SubtractAction
+  | MultiplyAction
+  | DivideAction;
 
 // reducers are pure functions
 // 1. the only data which be used must come in through the parameters
@@ -58,6 +90,16 @@ const calcToolReducer: Reducer<CalcToolAppState, CalcToolActions> = (
         ...state,
         result: state.result - action.payload.value,
       };
+    case MULTIPLY_ACTION:
+      return {
+        ...state,
+        result: state.result * action.payload.value,
+      };
+    case DIVIDE_ACTION:
+      return {
+        ...state,
+        result: state.result / action.payload.value,
+      };
     default:
       return state;
   }
@@ -69,9 +111,17 @@ type CalcToolProps = {
   result: number;
   onAdd: (value: number) => void;
   onSubtract: (value: number) => void;
+  onMultiply: (value: number) => void;
+  onDivide: (value: number) => void;
 };
 
-const CalcTool = ({ result, onAdd, onSubtract }: CalcToolProps) => {
+const CalcTool = ({
+  result,
+  onAdd: add,
+  onSubtract: subtract,
+  onMultiply: multiply,
+  onDivide: divide,
+}: CalcToolProps) => {
   const [numInput, setNumInput] = useState(0);
   return (
     <form>
@@ -85,11 +135,17 @@ const CalcTool = ({ result, onAdd, onSubtract }: CalcToolProps) => {
         />
       </div>
       <fieldset>
-        <button type="button" onClick={() => onAdd(numInput)}>
+        <button type="button" onClick={() => add(numInput)}>
           +
         </button>
-        <button type="button" onClick={() => onSubtract(numInput)}>
+        <button type="button" onClick={() => subtract(numInput)}>
           -
+        </button>
+        <button type="button" onClick={() => multiply(numInput)}>
+          *
+        </button>
+        <button type="button" onClick={() => divide(numInput)}>
+          /
         </button>
       </fieldset>
     </form>
@@ -106,6 +162,8 @@ const CalcToolContainer = () => {
     {
       onAdd: createAddAction,
       onSubtract: createSubtractAction,
+      onMultiply: createMultiplyAction,
+      onDivide: createDivideAction,
     },
     useDispatch() // return a dispatch function
   );
