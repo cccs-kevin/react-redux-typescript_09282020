@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { Car } from "../models/car";
+import { Car } from '../models/car';
 
 export type CarViewRowProps = {
   car: Car;
