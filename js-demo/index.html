@@ -21,7 +21,7 @@
       body: JSON.stringify(newCar),
     });
     const car = await res.json();
-    return car.id;
+    return car;
   };
 
   const removeCar = async (carId) => {
@@ -34,7 +34,7 @@
     const cars1 = await getAllCars();
     console.log(cars1);
 
-    const newCarId = await appendCar({
+    const { id: newCarId } = await appendCar({
       make: "a",
       model: "a",
       year: 1900,
@@ -49,6 +49,36 @@
 
     const cars3 = await getAllCars();
     console.log(cars3);
+  };
+
+  const doIt2 = () => {
+
+    return getAllCars()
+      .then(cars => {
+        console.log(cars);
+        return appendCar({
+          make: "a",
+          model: "a",
+          year: 1900,
+          color: "a",
+          price: 2000,
+        });
+      })
+      .then(carId => {
+        return getAllCars().then(cars => {
+          console.log(cars);
+          return carId;
+        });
+      })
+      .then(carId => {
+        return removeCar(carId)
+      })
+      .then(() => {
+        return getAllCars()
+      })
+      .then(cars => {
+        console.log(cars);
+      });
   };
 
   doIt();
