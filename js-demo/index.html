@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<script>
+  // get all of the car resources
+  /*
+  const getAllCars = () => {
+    return fetch("http://localhost:3060/cars").then((res) => res.json());
+  };
+  */
+
+  const getAllCars = async () => {
+    const res = await fetch("http://localhost:3060/cars");
+    const cars = await res.json();
+    return cars;
+  };
+
+  getAllCars().then((cars) => console.log(cars));
+
+  // append a car resource
+  /*
+  fetch("http://localhost:3060/cars", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      make: "a",
+      model: "a",
+      year: 1900,
+      color: "a",
+      price: 2000,
+    }),
+  })
+    .then((res) => res.json())
+    .then((cars) => console.log(cars));
+    */
+
+  /* Lab Exercise */
+
+  /*
+
+    Write some code which will query the rest API for all of the cars, then add a new car, then query all of the cars again, then delete the car which you added, then requery all of the cars again.
+
+    To do the delete: use the DELETE verb, no request body is needed, and include the car id in the url path.
+
+  */
+</script>
