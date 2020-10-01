@@ -27,5 +27,7 @@ export const CarToolStoreProvider: FC = ({ children }) => {
 };
 
 export const useCarToolStoreConsumer = () => {
+  // useDispatch
+  // useSelector
   return useContext(carToolStoreContext);
 };
