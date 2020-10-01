@@ -10,15 +10,20 @@ const DIVIDE_ACTION = 'DIVIDE';
 
 interface AddAction extends Action<string> {
   payload: {
-    value: number;
+    num: number;
   };
 }
 
 type CreateAddAction = (value: number) => AddAction;
 
+// typeguard
+function isAddAction(action: any): action is AddAction {
+  return action?.type === ADD_ACTION;
+}
+
 const createAddAction: CreateAddAction = (value: number) => ({
   type: ADD_ACTION,
-  payload: { value },
+  payload: { num: value },
 });
 
 interface SubtractAction extends Action<string> {
@@ -82,9 +87,12 @@ const resultReducer: Reducer<number, CalcToolActions> = (
   result = 0,
   action,
 ) => {
+
+  if (isAddAction(action)) {
+    return result + action.payload.num;
+  }
+
   switch (action.type) {
-    case ADD_ACTION:
-      return result + action.payload.value;
     case SUBTRACT_ACTION:
       return result - action.payload.value;
     case MULTIPLY_ACTION:
@@ -138,6 +146,7 @@ const calcToolReducer: Reducer<CalcToolAppState, CalcToolActions> = (
 ) => {
   return {
     ...state,
+    // feature state, combineReducers
     result: resultReducer(state.result, action),
     validationMessage: validationMessageReducer(
       state.validationMessage,
