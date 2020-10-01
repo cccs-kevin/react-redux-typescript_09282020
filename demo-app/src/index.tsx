@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Action, Reducer, createStore, bindActionCreators } from 'redux';
+import { Action, Reducer, createStore, bindActionCreators, AnyAction } from 'redux';
 import { useSelector, useDispatch, Provider } from 'react-redux';
 
 const ADD_ACTION = 'ADD';
 const SUBTRACT_ACTION = 'SUBTRACT';
 const MULTIPLY_ACTION = 'MULTIPLY';
 const DIVIDE_ACTION = 'DIVIDE';
+const CLEAR_ACTION = 'CLEAR';
+const SET_VALIDATION_MESSAGE_ACTION = 'SET_VALIDATION_MESSAGE';
 
-interface AddAction extends Action<string> {
+interface AddAction extends Action<typeof ADD_ACTION> {
   payload: {
     num: number;
   };
@@ -16,7 +18,6 @@ interface AddAction extends Action<string> {
 
 type CreateAddAction = (value: number) => AddAction;
 
-// typeguard
 function isAddAction(action: any): action is AddAction {
   return action?.type === ADD_ACTION;
 }
@@ -26,7 +27,7 @@ const createAddAction: CreateAddAction = (value: number) => ({
   payload: { num: value },
 });
 
-interface SubtractAction extends Action<string> {
+interface SubtractAction extends Action<typeof SUBTRACT_ACTION> {
   payload: {
     value: number;
   };
@@ -34,12 +35,16 @@ interface SubtractAction extends Action<string> {
 
 type CreateSubtractAction = (value: number) => SubtractAction;
 
+function isSubtractAction(action: any): action is SubtractAction {
+  return action?.type === SUBTRACT_ACTION;
+}
+
 const createSubtractAction: CreateSubtractAction = (value: number) => ({
   type: SUBTRACT_ACTION,
   payload: { value },
 });
 
-interface MultiplyAction extends Action<string> {
+interface MultiplyAction extends Action<typeof MULTIPLY_ACTION> {
   payload: {
     value: number;
   };
@@ -47,26 +52,72 @@ interface MultiplyAction extends Action<string> {
 
 type CreateMultiplyAction = (value: number) => MultiplyAction;
 
+function isMultiplyAction(action: any): action is MultiplyAction {
+  return action?.type === MULTIPLY_ACTION;
+}
+
 const createMultiplyAction: CreateMultiplyAction = (value: number) => ({
   type: MULTIPLY_ACTION,
   payload: { value },
 });
 
-interface DivideAction extends Action<string> {
+interface DivideAction extends Action<typeof DIVIDE_ACTION> {
   payload: {
     value: number;
   };
 }
 
-type CreateDivideAction = (value: number) => DivideAction;
+type CreateDivideAction = (
+  value: number,
+) => DivideAction | SetValidationMessageAction;
 
 function isDivideAction(action: any): action is DivideAction {
   return action?.type === DIVIDE_ACTION;
 }
 
-const createDivideAction: CreateDivideAction = (value: number) => ({
-  type: DIVIDE_ACTION,
-  payload: { value },
+const createDivideAction: CreateDivideAction = (value: number) => {
+  if (value === 0) {
+    return createSetValidationMessageAction('Division by zero is not allowed');
+  } else {
+    return {
+      type: DIVIDE_ACTION,
+      payload: { value },
+    };
+  }
+};
+
+interface ClearAction extends Action<typeof CLEAR_ACTION> {}
+
+type CreateClearAction = () => ClearAction;
+
+function isClearAction(action: any): action is ClearAction {
+  return action?.type === CLEAR_ACTION;
+}
+
+const createClearAction: CreateClearAction = () => ({
+  type: CLEAR_ACTION,
+});
+
+interface SetValidationMessageAction
+  extends Action<typeof SET_VALIDATION_MESSAGE_ACTION> {
+  payload: { validationMessage: string };
+}
+
+type CreateSetValidationMessageAction = (
+  validationMessage: string,
+) => SetValidationMessageAction;
+
+function isSetValidationMessageAction(
+  action: any,
+): action is SetValidationMessageAction {
+  return action?.type === SET_VALIDATION_MESSAGE_ACTION;
+}
+
+const createSetValidationMessageAction: CreateSetValidationMessageAction = (
+  validationMessage: string,
+) => ({
+  type: SET_VALIDATION_MESSAGE_ACTION,
+  payload: { validationMessage },
 });
 
 type HistoryEntry = {
@@ -85,9 +136,11 @@ type CalcToolActions =
   | AddAction
   | SubtractAction
   | MultiplyAction
-  | DivideAction;
+  | DivideAction
+  | ClearAction
+  | SetValidationMessageAction;
 
-const resultReducer: Reducer<number, CalcToolActions> = (
+const resultReducer: Reducer<number, AnyAction> = (
   result = 0,
   action,
 ) => {
@@ -95,26 +148,33 @@ const resultReducer: Reducer<number, CalcToolActions> = (
     return result + action.payload.num;
   }
 
-  switch (action.type) {
-    case SUBTRACT_ACTION:
-      return result - action.payload.value;
-    case MULTIPLY_ACTION:
-      return result * action.payload.value;
-    case DIVIDE_ACTION:
-      if (action.payload.value !== 0) {
-        return result / action.payload.value;
-      } else {
-        return result;
-      }
-    default:
-      return result;
+  if (isSubtractAction(action)) {
+    return result - action.payload.value;
   }
+
+  if (isMultiplyAction(action)) {
+    return result * action.payload.value;
+  }
+
+  if (isDivideAction(action)) {
+    return result / action.payload.value;
+  }
+
+  if (isClearAction(action)) {
+    return 0;
+  }
+
+  return result;
 };
 
-const historyReducer: Reducer<HistoryEntry[], CalcToolActions> = (
+const historyReducer: Reducer<HistoryEntry[], AnyAction> = (
   history = [],
   action,
 ) => {
+  if (isClearAction(action)) {
+    return [];
+  }
+
   if (
     [ADD_ACTION, SUBTRACT_ACTION, MULTIPLY_ACTION, DIVIDE_ACTION].includes(
       action.type,
@@ -132,18 +192,19 @@ const historyReducer: Reducer<HistoryEntry[], CalcToolActions> = (
   return history;
 };
 
-const validationMessageReducer: Reducer<string, CalcToolActions> = (
-  _,
-  action,
-) => {
-  if (isDivideAction(action) && action.payload.value === 0) {
-    return 'Division by zero is not allowed';
+const validationMessageReducer: Reducer<string, AnyAction> = (_, action) => {
+  // if (isDivideAction(action) && action.payload.value === 0) {
+  //   return 'Division by zero is not allowed';
+  // }
+
+  if (isSetValidationMessageAction(action)) {
+    return action.payload.validationMessage;
   }
 
   return '';
 };
 
-const calcToolReducer: Reducer<CalcToolAppState, CalcToolActions> = (
+const calcToolReducer: Reducer<CalcToolAppState, AnyAction> = (
   state = {} as CalcToolAppState,
   action,
 ) => {
@@ -169,6 +230,7 @@ type CalcToolProps = {
   onSubtract: (value: number) => void;
   onMultiply: (value: number) => void;
   onDivide: (value: number) => void;
+  onClear: () => void;
 };
 
 const CalcTool = ({
@@ -179,8 +241,15 @@ const CalcTool = ({
   onSubtract: subtract,
   onMultiply: multiply,
   onDivide: divide,
+  onClear,
 }: CalcToolProps) => {
   const [numInput, setNumInput] = useState(0);
+
+  const clear = () => {
+    setNumInput(0);
+    onClear();
+  };
+
   return (
     <>
       <form>
@@ -206,6 +275,9 @@ const CalcTool = ({
           </button>
           <button type="button" onClick={() => divide(numInput)}>
             /
+          </button>
+          <button type="button" onClick={clear}>
+            Clear
           </button>
         </fieldset>
       </form>
@@ -237,6 +309,7 @@ const CalcToolContainer = () => {
       onSubtract: createSubtractAction,
       onMultiply: createMultiplyAction,
       onDivide: createDivideAction,
+      onClear: createClearAction,
     },
     useDispatch(),
   );
