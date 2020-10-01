@@ -60,6 +60,10 @@ interface DivideAction extends Action<string> {
 
 type CreateDivideAction = (value: number) => DivideAction;
 
+function isDivideAction(action: any): action is DivideAction {
+  return action?.type === DIVIDE_ACTION;
+}
+
 const createDivideAction: CreateDivideAction = (value: number) => ({
   type: DIVIDE_ACTION,
   payload: { value },
@@ -87,7 +91,6 @@ const resultReducer: Reducer<number, CalcToolActions> = (
   result = 0,
   action,
 ) => {
-
   if (isAddAction(action)) {
     return result + action.payload.num;
   }
@@ -122,7 +125,7 @@ const historyReducer: Reducer<HistoryEntry[], CalcToolActions> = (
       {
         id: Math.max(...history.map((h) => h.id), 0) + 1,
         operation: action.type,
-        value: action.payload.value,
+        value: isAddAction(action) ? action.payload.num : action.payload.value,
       },
     ];
   }
@@ -133,7 +136,7 @@ const validationMessageReducer: Reducer<string, CalcToolActions> = (
   _,
   action,
 ) => {
-  if (action.type === DIVIDE_ACTION && action.payload.value === 0) {
+  if (isDivideAction(action) && action.payload.value === 0) {
     return 'Division by zero is not allowed';
   }
 
