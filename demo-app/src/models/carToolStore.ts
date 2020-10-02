@@ -4,6 +4,7 @@ export type CarToolState = {
   cars: Car[];
   editCarId: number;
   carsOrder: CarsOrder;
+  isLoading: boolean;
 };
 
 export type CarToolActions = {

@@ -1,4 +1,4 @@
-import { Reducer, combineReducers, AnyAction } from 'redux';
+import { Reducer, combineReducers, AnyAction, Action } from 'redux';
 
 import { Car, CarsOrder, ORDER_ASC, ORDER_DESC } from '../models/car';
 import { CarToolState } from '../models/carToolStore';
@@ -10,6 +10,7 @@ import {
   isSortCarsAction,
   isEditCarAction,
   isCancelCarAction,
+  isRefreshCarsDoneCarAction,
 } from '../actions/carToolActions';
 
 export const carsOrderReducer: Reducer<CarsOrder, AnyAction> = (
@@ -53,22 +54,23 @@ export const editCarIdReducer: Reducer<number, AnyAction> = (
   return editCarId;
 };
 
-const initialCars: Car[] = [
-  {
-    id: 1,
-    make: 'Ford',
-    model: 'Fusion Hybrid',
-    year: 2020,
-    color: 'blue',
-    price: 45000,
-  },
-  { id: 2, make: 'Tesla', model: 'S', year: 2019, color: 'red', price: 120000 },
-];
+// const initialCars: Car[] = [
+//   {
+//     id: 1,
+//     make: 'Ford',
+//     model: 'Fusion Hybrid',
+//     year: 2020,
+//     color: 'blue',
+//     price: 45000,
+//   },
+//   { id: 2, make: 'Tesla', model: 'S', year: 2019, color: 'red', price: 120000 },
+// ];
 
-export const carsReducer: Reducer<Car[], AnyAction> = (
-  cars = initialCars,
-  action,
-) => {
+export const carsReducer: Reducer<Car[], AnyAction> = (cars = [], action) => {
+  if (isRefreshCarsDoneCarAction(action)) {
+    return action.payload.cars;
+  }
+
   if (isAppendCarAction(action)) {
     return [
       ...cars,
@@ -88,10 +90,25 @@ export const carsReducer: Reducer<Car[], AnyAction> = (
   }
 
   if (isRemoveCarAction(action)) {
-    return cars.filter((c) => c.id === action.payload.carId);
+    return cars.filter((c) => c.id !== action.payload.carId);
   }
 
   return cars;
+};
+
+export const isLoadingReducer: Reducer<boolean, Action<string>> = (
+  isLoading = false,
+  action,
+) => {
+  if (action.type.includes('REQUEST')) {
+    return true;
+  }
+
+  if (action.type.includes('DONE')) {
+    return false;
+  }
+
+  return isLoading;
 };
 
 export const carToolReducer: Reducer<CarToolState, AnyAction> = combineReducers(
@@ -99,5 +116,6 @@ export const carToolReducer: Reducer<CarToolState, AnyAction> = combineReducers(
     carsOrder: carsOrderReducer,
     editCarId: editCarIdReducer,
     cars: carsReducer,
+    isLoading: isLoadingReducer,
   },
 );

@@ -1,13 +1,71 @@
-import { Action, AnyAction } from 'redux';
+import { Action, AnyAction, Dispatch } from 'redux';
 
 import { Car, NewCar, CarKeys } from '../models/car';
 
+export const REFRESH_CARS_REQUEST_ACTION = 'REFRESH_CARS_REQUEST_ACTION';
+export const REFRESH_CARS_DONE_ACTION = 'REFRESH_CARS_DONE_ACTION';
 export const APPEND_CAR_ACTION = 'APPEND_CAR';
 export const REPLACE_CAR_ACTION = 'REPLACE_CAR';
 export const REMOVE_CAR_ACTION = 'REMOVE_CAR';
 export const EDIT_CAR_ACTION = 'EDIT_CAR';
 export const CANCEL_CAR_ACTION = 'CANCEL_CAR';
 export const SORT_CARS_ACTION = 'SORT_CARS';
+
+// Refresh Cars Request Action
+
+export interface RefreshCarsRequestCarAction
+  extends Action<typeof REFRESH_CARS_REQUEST_ACTION> {}
+
+export type CreateRefreshCarsRequestCarAction = () => RefreshCarsRequestCarAction;
+
+export function isRefreshCarsRequestCarAction(
+  action: AnyAction,
+): action is RefreshCarsRequestCarAction {
+  return action?.type === REFRESH_CARS_REQUEST_ACTION;
+}
+
+export const createRefreshCarsRequestCarAction: CreateRefreshCarsRequestCarAction = () => ({
+  type: REFRESH_CARS_REQUEST_ACTION,
+});
+
+// Refresh Cars Done Action
+
+export interface RefreshCarsDoneCarAction
+  extends Action<typeof REFRESH_CARS_DONE_ACTION> {
+  payload: {
+    cars: Car[];
+  };
+}
+
+export type CreateRefreshCarsDoneCarAction = (
+  cars: Car[],
+) => RefreshCarsDoneCarAction;
+
+export function isRefreshCarsDoneCarAction(
+  action: AnyAction,
+): action is RefreshCarsDoneCarAction {
+  return action?.type === REFRESH_CARS_DONE_ACTION;
+}
+
+export const createRefreshCarsDoneCarAction: CreateRefreshCarsDoneCarAction = (
+  cars: Car[],
+) => ({
+  type: REFRESH_CARS_DONE_ACTION,
+  payload: { cars },
+});
+
+// Refresh Cars Thunk Function
+
+// thunk creator
+export const refreshCars = () => {
+  // thunk function
+  return async (dispatch: Dispatch) => {
+    dispatch(createRefreshCarsRequestCarAction());
+    const res = await fetch('http://localhost:3060/cars');
+    const cars = await res.json();
+    dispatch(createRefreshCarsDoneCarAction(cars));
+  };
+};
 
 // New Car Action
 

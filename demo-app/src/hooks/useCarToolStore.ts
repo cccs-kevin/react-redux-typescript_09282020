@@ -62,6 +62,7 @@ export const useCarToolStore: UseCarToolStore = (initialCars) => {
     cars: orderCars(cars, carsOrder),
     editCarId,
     carsOrder,
+    isLoading: false,
     addCar,
     saveCar,
     deleteCar,

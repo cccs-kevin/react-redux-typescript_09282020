@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -13,6 +13,7 @@ export function CarToolContainer() {
   const stateData = {
     cars: useSelector<CarToolState, Car[]>(carsSelector),
     editCarId: useSelector<CarToolState, number>((state) => state.editCarId),
+    isLoading: useSelector<CarToolState, boolean>((state) => state.isLoading),
     carsOrder: useSelector<CarToolState, CarsOrder>((state) => state.carsOrder),
   };
 
@@ -29,6 +30,10 @@ export function CarToolContainer() {
     },
     dispatch,
   );
+
+  useEffect(() => {
+    dispatch(CarToolActions.refreshCars());
+  }, [dispatch]);
 
   return <CarTool {...stateData} {...boundActions} />;
 }
