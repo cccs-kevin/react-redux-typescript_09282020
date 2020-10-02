@@ -6,15 +6,15 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Typography
+  Typography,
 } from '@material-ui/core';
 
 import { Car, CarKeys } from '../models/Car';
 import { CarsSort } from '../models/CarsSort';
 
 import { CarEditRow } from './CarEditRow';
-import { CarViewRow } from './CarViewRow';
-import { ColHeader } from './ColHeader';
+import { CarViewRowMemo as CarViewRow } from './CarViewRow';
+import { ColHeaderMemo as ColHeader } from './ColHeader';
 
 export type CarTableProps = {
   cars: Car[];

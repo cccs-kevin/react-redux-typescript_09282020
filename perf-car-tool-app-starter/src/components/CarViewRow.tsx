@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { TableRow, TableCell, Typography } from '@material-ui/core';
 
 import { Car } from '../models/Car';
@@ -38,3 +38,5 @@ export function CarViewRow({ car, onEditCar, onDeleteCar }: CarViewRowProps) {
     </TableRow>
   );
 }
+
+export const CarViewRowMemo = memo(CarViewRow);

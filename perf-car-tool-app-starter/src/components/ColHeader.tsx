@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { TableCell, Box } from '@material-ui/core';
 import { ArrowUpward, ArrowDownward } from '@material-ui/icons';
 
@@ -28,3 +28,5 @@ export function ColHeader(props: ColHeaderProps) {
     </TableCell>
   );
 }
+
+export const ColHeaderMemo = memo(ColHeader);

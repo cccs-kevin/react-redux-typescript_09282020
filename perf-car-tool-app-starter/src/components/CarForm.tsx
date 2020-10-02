@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Box, Typography } from '@material-ui/core';
 
 import { CarFormData } from '../models/CarFormData';
@@ -85,3 +85,5 @@ export function CarForm({
 CarForm.defaultProps = {
   headerText: 'Car Form',
 };
+
+export const CarFormMemo = memo(CarForm);

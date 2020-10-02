@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import { CarToolStore } from '../models/CarToolStore';
 import { CarToolLayout } from './CarToolLayout';
 import { CarTable } from './CarTable';
-import { CarForm } from './CarForm';
+import { CarFormMemo as CarForm } from './CarForm';
 import { CarAddButton } from './buttons';
 import { useStyles } from './CarTool.styles';
 import { ConfirmDeleteCarDialog } from './ConfirmDeleteCarDialog';

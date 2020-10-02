@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, RenderResult, fireEvent } from '@testing-library/react';
 
-import { NewCar, CarKeys } from '../models/car';
+import { NewCar, NewCarKeys } from '../models/car';
 import { CarForm } from '../components/CarForm';
 
 describe('CarViewRow testing library', () => {
   let car: NewCar;
-  let textInputKeys: CarKeys[] = ['make', 'model', 'color'];
-  let numberInputKeys: CarKeys[] = ['year', 'price'];
+  let textInputKeys: NewCarKeys[] = ['make', 'model', 'color'];
+  let numberInputKeys: NewCarKeys[] = ['year', 'price'];
   let renderResult: RenderResult;
   let submitCarSpy: jest.Mock;
 
@@ -34,12 +34,12 @@ describe('CarViewRow testing library', () => {
 
     const textboxInputs = getAllByRole('textbox');
     expect(textboxInputs.length).toBe(3);
-    textboxInputs.forEach((input: HTMLInputElement, index: number) => {
+    textboxInputs.forEach((input: HTMLElement, index: number) => {
       const evt = {
         target: {
-          type: input.type,
+          type: (input as HTMLInputElement).type,
           value: car[textInputKeys[index]],
-          name: input.name,
+          name: (input as HTMLInputElement).name,
         },
       };
       fireEvent.change(input, evt);
@@ -47,12 +47,12 @@ describe('CarViewRow testing library', () => {
 
     const spinbuttonInputs = getAllByRole('spinbutton');
     expect(spinbuttonInputs.length).toBe(2);
-    spinbuttonInputs.forEach((input: HTMLInputElement, index: number) => {
+    spinbuttonInputs.forEach((input: HTMLElement, index: number) => {
       const evt = {
         target: {
-          type: input.type,
+          type: (input as HTMLInputElement).type,
           value: car[numberInputKeys[index]],
-          name: input.name,
+          name: (input as HTMLInputElement).name,
         },
       };
       fireEvent.change(input, evt);

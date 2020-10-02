@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 import { Car } from '../models/Car';
 import { CarsSort, SORT_ASC, SORT_DESC } from '../models/CarsSort';
@@ -41,61 +41,76 @@ export const useCarToolStore: UseCarToolStore = (initialCars) => {
     carId: -1,
   });
 
-  const addCar = (carForm: CarFormData) => {
-    appendCar(carForm);
+  const addCar = useCallback(
+    (carForm: CarFormData) => {
+      appendCar(carForm);
+      setEditCarId(-1);
+    },
+    [appendCar],
+  );
+
+  const saveCar = useCallback(
+    (car: Car) => {
+      replaceCar(car);
+      setEditCarId(-1);
+    },
+    [replaceCar],
+  );
+
+  const confirmDeleteCar = useCallback(
+    (carId: number) => {
+      const { make, model, year } = cars.find((c) => c.id === carId)!;
+
+      setConfirmDeleteCarMessage({
+        message: `Are you sure you want to delete the ${year} ${make} ${model}?`,
+        carId,
+      });
+    },
+    [cars],
+  );
+
+  const deleteCar = useCallback(
+    (carId: number) => {
+      removeCar(carId);
+      setEditCarId(-1);
+      setConfirmDeleteCarMessage({
+        message: '',
+        carId: -1,
+      });
+    },
+    [removeCar],
+  );
+
+  const cancelCar = useCallback(() => {
     setEditCarId(-1);
-  };
+  }, []);
 
-  const saveCar = (car: Car) => {
-    replaceCar(car);
-    setEditCarId(-1);
-  };
+  const sortCars = useCallback(
+    (col: keyof Car) => {
+      if (col === carsSort.col) {
+        setCarsSort({
+          col,
+          dir: SORT_ASC === carsSort.dir ? SORT_DESC : SORT_ASC,
+        });
+      } else {
+        setCarsSort({
+          col,
+          dir: SORT_ASC,
+        });
+      }
+    },
+    [carsSort],
+  );
 
-  const confirmDeleteCar = (carId: number) => {
-    const { make, model, year } = cars.find((c) => c.id === carId)!;
-
-    setConfirmDeleteCarMessage({
-      message: `Are you sure you want to delete the ${year} ${make} ${model}?`,
-      carId,
-    });
-  };
-
-  const deleteCar = (carId: number) => {
-    removeCar(carId);
-    setEditCarId(-1);
+  const cancelConfirmDeleteCar = useCallback(() => {
     setConfirmDeleteCarMessage({
       message: '',
       carId: -1,
     });
-  };
-
-  const cancelCar = () => {
-    setEditCarId(-1);
-  };
-
-  const sortCars = (col: keyof Car) => {
-    if (col === carsSort.col) {
-      setCarsSort({
-        col,
-        dir: SORT_ASC === carsSort.dir ? SORT_DESC : SORT_ASC,
-      });
-    } else {
-      setCarsSort({
-        col,
-        dir: SORT_ASC,
-      });
-    }
-  };
-
-  function cancelConfirmDeleteCar() {
-    setConfirmDeleteCarMessage({
-      message: '',
-      carId: -1,
-    });
-  }
+  }, []);
 
   return {
-    sortedCars: sortedCars(cars, carsSort),
+    sortedCars: useMemo(() => sortedCars(cars, carsSort), [cars, carsSort]),
     editCarId,
     carsSort,
     confirmDeleteCarMessage,

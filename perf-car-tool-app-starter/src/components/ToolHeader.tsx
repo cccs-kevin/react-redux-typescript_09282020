@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Typography } from '@material-ui/core';
 
 import { useStyles } from './ToolHeader.styles';
@@ -18,3 +18,5 @@ export function ToolHeader({ headerText }: ToolHeaderProps) {
     </header>
   );
 }
+
+export const ToolHeaderMemo = memo(ToolHeader);
