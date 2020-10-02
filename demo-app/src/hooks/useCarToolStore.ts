@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 import {
   Car,
@@ -7,10 +7,10 @@ import {
   CarsOrder,
   ORDER_ASC,
   ORDER_DESC,
-} from "../models/car";
-import { CarToolStore } from "../models/carToolStore";
-import { useList } from "../hooks/useList";
-import { orderCars } from "../selectors/orderCars";
+} from '../models/car';
+import { CarToolStore } from '../models/carToolStore';
+import { useList } from '../hooks/useList';
+import { orderCars } from '../selectors/carToolSelectors';
 
 type UseCarToolStore = (initialCars: Car[]) => CarToolStore;
 
@@ -18,7 +18,7 @@ type UseCarToolStore = (initialCars: Car[]) => CarToolStore;
 export const useCarToolStore: UseCarToolStore = (initialCars) => {
   // Application State - Data
   const [carsOrder, setCarsOrder] = useState<CarsOrder>({
-    column: "id",
+    column: 'id',
     direction: ORDER_ASC,
   });
   const [editCarId, setEditCarId] = useState(-1);
@@ -59,7 +59,7 @@ export const useCarToolStore: UseCarToolStore = (initialCars) => {
   };
 
   return {
-    sortedCars: orderCars(cars, carsOrder),
+    cars: orderCars(cars, carsOrder),
     editCarId,
     carsOrder,
     addCar,

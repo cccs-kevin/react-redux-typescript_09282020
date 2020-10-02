@@ -1,4 +1,5 @@
-import { Car, CarsOrder, ORDER_ASC } from "../models/car";
+import { Car, CarsOrder, ORDER_ASC } from '../models/car';
+import { CarToolState } from '../models/carToolStore';
 
 export const orderCars = (cars: Car[], carsOrder: CarsOrder) => {
   return cars.concat().sort((a: Car, b: Car) => {
@@ -14,3 +15,6 @@ export const orderCars = (cars: Car[], carsOrder: CarsOrder) => {
     }
   });
 };
+
+export const carsSelector = (state: CarToolState) =>
+  orderCars(state.cars, state.carsOrder);

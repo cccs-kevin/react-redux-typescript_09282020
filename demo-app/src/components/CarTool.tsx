@@ -1,28 +1,37 @@
-import React from "react";
+import React from 'react';
 
-import { ToolHeader } from "./ToolHeader";
-import { CarTable } from "./CarTable";
-import { CarForm } from "./CarForm";
+import { ToolHeader } from './ToolHeader';
+import { CarTable } from './CarTable';
+import { CarForm } from './CarForm';
+import { CarToolState } from '../models/carToolStore';
+import { Car, CarKeys, NewCar } from '../models/car';
 
-import { useCarToolStoreConsumer } from "../contexts/carToolStoreContext";
+export type CarToolProps = CarToolState & {
+  onAddCar: (car: NewCar) => void;
+  onSaveCar: (car: Car) => void;
+  onDeleteCar: (carId: number) => void;
+  onEditCar: (carId: number) => void;
+  onCancelCar: () => void;
+  onSortCars: (col: CarKeys) => void;
+};
 
-export function CarTool() {
+export function CarTool(props: CarToolProps) {
   const {
-    sortedCars,
+    cars,
     editCarId,
     carsOrder,
-    addCar,
-    saveCar,
-    deleteCar,
-    sortCars,
-    editCar,
-    cancelCar,
-  } = useCarToolStoreConsumer();
+    onAddCar: addCar,
+    onSaveCar: saveCar,
+    onDeleteCar: deleteCar,
+    onEditCar: editCar,
+    onCancelCar: cancelCar,
+    onSortCars: sortCars,
+  } = props;
   return (
     <>
       <ToolHeader headerText="Car Tool" />
       <CarTable
-        cars={sortedCars}
+        cars={cars}
         editCarId={editCarId}
         carsOrder={carsOrder}
         onEditCar={editCar}

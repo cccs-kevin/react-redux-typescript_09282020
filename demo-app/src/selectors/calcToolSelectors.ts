@@ -1,4 +1,4 @@
-import { CalcToolAppState, HistoryEntry } from '../models/calcTool';
+import { CalcToolAppState } from '../models/calcTool';
 
 import {
   ADD_ACTION,

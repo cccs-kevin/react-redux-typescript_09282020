@@ -1,19 +1,20 @@
-import React from "react";
+import React from 'react';
 
-import { Colour } from "../models/colour";
+import { Colour, NewColour } from '../models/colour';
 
-import { useList } from "../hooks/useList";
-import { ToolHeader } from "./ToolHeader";
-import { ItemList } from "./ItemList";
-import { ColourForm } from "./ColourForm";
+import { ToolHeader } from './ToolHeader';
+import { ItemList } from './ItemList';
+import { ColourForm } from './ColourForm';
 
 export type ColourToolProps = {
   colours: Colour[];
+  onAppendColour: (colour: NewColour) => void;
 };
 
-export function ColourTool(props: ColourToolProps) {
-  const [colours, appendColour] = useList([...props.colours]);
-
+export function ColourTool({
+  colours,
+  onAppendColour: appendColour,
+}: ColourToolProps) {
   return (
     <>
       <ToolHeader headerText="Color Tool" />

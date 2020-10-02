@@ -1,7 +1,7 @@
-import { Car, NewCar, CarsOrder } from "./car";
+import { Car, NewCar, CarsOrder } from './car';
 
 export type CarToolState = {
-  sortedCars: Car[];
+  cars: Car[];
   editCarId: number;
   carsOrder: CarsOrder;
 };
