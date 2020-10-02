@@ -13,6 +13,7 @@ export type CarToolProps = CarToolState & {
   onEditCar: (carId: number) => void;
   onCancelCar: () => void;
   onSortCars: (col: CarKeys) => void;
+  onRefreshCars: () => void;
 };
 
 export function CarTool(props: CarToolProps) {
@@ -20,16 +21,22 @@ export function CarTool(props: CarToolProps) {
     cars,
     editCarId,
     carsOrder,
+    isLoading,
     onAddCar: addCar,
     onSaveCar: saveCar,
     onDeleteCar: deleteCar,
     onEditCar: editCar,
     onCancelCar: cancelCar,
     onSortCars: sortCars,
+    onRefreshCars: refreshCars,
   } = props;
   return (
     <>
+      {isLoading && <div>Calling the REST API</div>}
       <ToolHeader headerText="Car Tool" />
+      <button type="button" onClick={refreshCars}>
+        Refresh Cars
+      </button>
       <CarTable
         cars={cars}
         editCarId={editCarId}

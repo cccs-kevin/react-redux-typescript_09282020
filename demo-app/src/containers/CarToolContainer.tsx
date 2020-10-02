@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -19,21 +19,26 @@ export function CarToolContainer() {
 
   const dispatch = useDispatch();
 
-  const boundActions = bindActionCreators(
-    {
-      onAddCar: CarToolActions.createAppendCarAction,
-      onSaveCar: CarToolActions.createReplaceCarAction,
-      onDeleteCar: CarToolActions.createRemoveCarAction,
-      onEditCar: CarToolActions.createEditCarAction,
-      onCancelCar: CarToolActions.createCancelCarAction,
-      onSortCars: CarToolActions.createSortCarsAction,
-    },
-    dispatch,
+  const boundActions = useMemo(
+    () =>
+      bindActionCreators(
+        {
+          onRefreshCars: CarToolActions.refreshCars,
+          onAddCar: CarToolActions.createAppendCarAction,
+          onSaveCar: CarToolActions.createReplaceCarAction,
+          onDeleteCar: CarToolActions.createRemoveCarAction,
+          onEditCar: CarToolActions.createEditCarAction,
+          onCancelCar: CarToolActions.createCancelCarAction,
+          onSortCars: CarToolActions.createSortCarsAction,
+        },
+        dispatch,
+      ),
+    [dispatch],
   );
 
   useEffect(() => {
-    dispatch(CarToolActions.refreshCars());
-  }, [dispatch]);
+    boundActions.onRefreshCars();
+  }, [boundActions]);
 
   return <CarTool {...stateData} {...boundActions} />;
 }
