@@ -4,12 +4,12 @@ import { Car, CarsOrder, ORDER_ASC, ORDER_DESC } from '../models/car';
 import { CarToolState } from '../models/carToolStore';
 
 import {
-  isAppendCarAction,
   isReplaceCarAction,
   isRemoveCarAction,
   isSortCarsAction,
   isEditCarAction,
   isCancelCarAction,
+  isRefreshCarsRequestCarAction,
   isRefreshCarsDoneCarAction,
 } from '../actions/carToolActions';
 
@@ -43,7 +43,7 @@ export const editCarIdReducer: Reducer<number, AnyAction> = (
   }
 
   if (
-    isAppendCarAction(action) ||
+    isRefreshCarsRequestCarAction(action) ||
     isReplaceCarAction(action) ||
     isRemoveCarAction(action) ||
     isCancelCarAction(action)
@@ -69,16 +69,6 @@ export const editCarIdReducer: Reducer<number, AnyAction> = (
 export const carsReducer: Reducer<Car[], AnyAction> = (cars = [], action) => {
   if (isRefreshCarsDoneCarAction(action)) {
     return action.payload.cars;
-  }
-
-  if (isAppendCarAction(action)) {
-    return [
-      ...cars,
-      {
-        ...action.payload.car,
-        id: Math.max(...cars.map((c) => c.id), 0) + 1,
-      },
-    ];
   }
 
   if (isReplaceCarAction(action)) {

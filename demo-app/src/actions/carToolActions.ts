@@ -4,7 +4,7 @@ import { Car, NewCar, CarKeys } from '../models/car';
 
 export const REFRESH_CARS_REQUEST_ACTION = 'REFRESH_CARS_REQUEST_ACTION';
 export const REFRESH_CARS_DONE_ACTION = 'REFRESH_CARS_DONE_ACTION';
-export const APPEND_CAR_ACTION = 'APPEND_CAR';
+export const APPEND_CAR_REQUEST_ACTION = 'APPEND_REQUEST_CAR';
 export const REPLACE_CAR_ACTION = 'REPLACE_CAR';
 export const REMOVE_CAR_ACTION = 'REMOVE_CAR';
 export const EDIT_CAR_ACTION = 'EDIT_CAR';
@@ -67,26 +67,50 @@ export const refreshCars = () => {
   };
 };
 
-// New Car Action
+// Append Car Request Action
 
-export interface AppendCarAction extends Action<typeof APPEND_CAR_ACTION> {
+export interface AppendCarRequestAction
+  extends Action<typeof APPEND_CAR_REQUEST_ACTION> {
   payload: { car: NewCar };
 }
 
-export type CreateAppendCarAction = (car: NewCar) => AppendCarAction;
+export type CreateAppendCarRequestAction = (
+  car: NewCar,
+) => AppendCarRequestAction;
 
-export function isAppendCarAction(
+export function isAppendCarRequestAction(
   action: AnyAction,
-): action is AppendCarAction {
-  return action?.type === APPEND_CAR_ACTION;
+): action is AppendCarRequestAction {
+  return action?.type === APPEND_CAR_REQUEST_ACTION;
 }
 
-export const createAppendCarAction: CreateAppendCarAction = (car) => ({
-  type: APPEND_CAR_ACTION,
+export const createAppendCarRequestAction: CreateAppendCarRequestAction = (
+  car,
+) => ({
+  type: APPEND_CAR_REQUEST_ACTION,
   payload: { car },
 });
 
-// End New Car Action
+// End Append Car Request Action
+
+// Append Car Thunk Function
+
+export const appendCar = (car: NewCar) => {
+  return async (dispatch: Dispatch<any>) => {
+    dispatch(createAppendCarRequestAction(car));
+
+    await fetch('http://localhost:3060/cars', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(car),
+    });
+
+    const refreshCarsThunk = refreshCars();
+    refreshCarsThunk(dispatch);
+
+    //dispatch(refreshCars());
+  };
+};
 
 // Existing Car Action
 

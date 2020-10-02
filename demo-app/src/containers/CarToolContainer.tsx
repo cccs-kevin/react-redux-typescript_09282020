@@ -24,7 +24,7 @@ export function CarToolContainer() {
       bindActionCreators(
         {
           onRefreshCars: CarToolActions.refreshCars,
-          onAddCar: CarToolActions.createAppendCarAction,
+          onAddCar: CarToolActions.appendCar,
           onSaveCar: CarToolActions.createReplaceCarAction,
           onDeleteCar: CarToolActions.createRemoveCarAction,
           onEditCar: CarToolActions.createEditCarAction,
