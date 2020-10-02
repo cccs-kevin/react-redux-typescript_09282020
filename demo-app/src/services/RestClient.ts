@@ -1,6 +1,13 @@
 import { Item, ItemId } from '../models/item';
 
 export class RestClient<T extends Item> {
+
+  // private baseUrl: string;
+
+  // constructor(baseUrl: string) {
+  //   this.baseUrl = baseUrl;
+  // }
+
   constructor(private baseUrl: string) {}
 
   async all() {
@@ -9,7 +16,7 @@ export class RestClient<T extends Item> {
     return items as T[];
   }
 
-  async append(newItem: Omit<Item, 'id'>) {
+  async append(newItem: Omit<T, 'id'>) {
     const res = await fetch(`${this.baseUrl}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -20,7 +27,7 @@ export class RestClient<T extends Item> {
     return car.id;
   }
 
-  async replace(item: Item) {
+  async replace(item: T) {
     await fetch(`${this.baseUrl}/${encodeURIComponent(item.id)}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
