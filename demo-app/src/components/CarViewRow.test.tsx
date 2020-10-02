@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, RenderResult, fireEvent } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 
-import { Car } from '../models/car';
+import { Car, CarKeys } from '../models/car';
 import { CarViewRow } from '../components/CarViewRow';
 
 test('snapshot CarViewRow component', () => {
@@ -29,8 +29,14 @@ test('snapshot CarViewRow component', () => {
 });
 
 describe('CarViewRow testing library', () => {
-  test('render CarViewRow component', () => {
-    const car = {
+  let car: Car;
+  let carKeys: CarKeys[];
+  let renderResult: RenderResult;
+  let editCarSpy: jest.Mock;
+  let deleteCarSpy: jest.Mock;
+
+  beforeEach(() => {
+    car = {
       id: 1,
       make: 'Ford',
       model: 'Fusion Hybrid',
@@ -39,19 +45,27 @@ describe('CarViewRow testing library', () => {
       price: 45000,
     };
 
-    const carKeys = Object.keys(car);
-    const renderResult = render(
+    carKeys = Object.keys(car) as CarKeys[];
+
+    editCarSpy = jest.fn();
+    deleteCarSpy = jest.fn();
+  });
+
+  beforeEach(() => {
+    renderResult = render(
       <table>
         <tbody>
           <CarViewRow
             car={car}
-            onEditCar={() => null}
-            onDeleteCar={() => null}
+            onEditCar={editCarSpy}
+            onDeleteCar={deleteCarSpy}
           />
         </tbody>
       </table>,
     );
+  });
 
+  test('render CarViewRow component', () => {
     const cells = renderResult.getAllByRole('cell');
 
     expect(cells.length).toBe(7);
@@ -59,5 +73,15 @@ describe('CarViewRow testing library', () => {
     cells.slice(0, 6).map((element, index) => {
       expect(element.textContent).toBe(String(car[carKeys[index]]));
     });
+  });
+
+  test('click edit', () => {
+    fireEvent.click(renderResult.getByText('Edit'));
+    expect(editCarSpy).toHaveBeenCalledWith(1);
+  });
+
+  test('click delete', () => {
+    fireEvent.click(renderResult.getByText('Delete'));
+    expect(deleteCarSpy).toHaveBeenCalledWith(1);
   });
 });
