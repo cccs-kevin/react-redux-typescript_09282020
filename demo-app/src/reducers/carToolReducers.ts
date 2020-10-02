@@ -4,8 +4,6 @@ import { Car, CarsOrder, ORDER_ASC, ORDER_DESC } from '../models/car';
 import { CarToolState } from '../models/carToolStore';
 
 import {
-  isReplaceCarAction,
-  isRemoveCarAction,
   isSortCarsAction,
   isEditCarAction,
   isCancelCarAction,
@@ -42,45 +40,16 @@ export const editCarIdReducer: Reducer<number, AnyAction> = (
     return action.payload.carId;
   }
 
-  if (
-    isRefreshCarsRequestCarAction(action) ||
-    isReplaceCarAction(action) ||
-    isRemoveCarAction(action) ||
-    isCancelCarAction(action)
-  ) {
+  if (isRefreshCarsRequestCarAction(action) || isCancelCarAction(action)) {
     return -1;
   }
 
   return editCarId;
 };
 
-// const initialCars: Car[] = [
-//   {
-//     id: 1,
-//     make: 'Ford',
-//     model: 'Fusion Hybrid',
-//     year: 2020,
-//     color: 'blue',
-//     price: 45000,
-//   },
-//   { id: 2, make: 'Tesla', model: 'S', year: 2019, color: 'red', price: 120000 },
-// ];
-
 export const carsReducer: Reducer<Car[], AnyAction> = (cars = [], action) => {
   if (isRefreshCarsDoneCarAction(action)) {
     return action.payload.cars;
-  }
-
-  if (isReplaceCarAction(action)) {
-    const { car } = action.payload;
-    const carIndex = cars.findIndex((c) => c.id === car.id);
-    const newCars = [...cars];
-    newCars[carIndex] = car;
-    return newCars;
-  }
-
-  if (isRemoveCarAction(action)) {
-    return cars.filter((c) => c.id !== action.payload.carId);
   }
 
   return cars;

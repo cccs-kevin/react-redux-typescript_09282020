@@ -25,8 +25,8 @@ export function CarToolContainer() {
         {
           onRefreshCars: CarToolActions.refreshCars,
           onAddCar: CarToolActions.appendCar,
-          onSaveCar: CarToolActions.createReplaceCarAction,
-          onDeleteCar: CarToolActions.createRemoveCarAction,
+          onSaveCar: CarToolActions.replaceCar,
+          onDeleteCar: CarToolActions.removeCar,
           onEditCar: CarToolActions.createEditCarAction,
           onCancelCar: CarToolActions.createCancelCarAction,
           onSortCars: CarToolActions.createSortCarsAction,

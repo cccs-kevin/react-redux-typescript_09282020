@@ -1,12 +1,15 @@
 import { Action, AnyAction, Dispatch } from 'redux';
 
 import { Car, NewCar, CarKeys } from '../models/car';
+import { CarsRestClient } from '../services/CarsRestClient';
+
+const carsRestClient = new CarsRestClient('http://localhost:3060/cars');
 
 export const REFRESH_CARS_REQUEST_ACTION = 'REFRESH_CARS_REQUEST_ACTION';
 export const REFRESH_CARS_DONE_ACTION = 'REFRESH_CARS_DONE_ACTION';
 export const APPEND_CAR_REQUEST_ACTION = 'APPEND_REQUEST_CAR';
-export const REPLACE_CAR_ACTION = 'REPLACE_CAR';
-export const REMOVE_CAR_ACTION = 'REMOVE_CAR';
+export const REPLACE_CAR_REQUEST_ACTION = 'REPLACE_REQUEST_CAR';
+export const REMOVE_CAR_REQUEST_ACTION = 'REMOVE_REQUEST_CAR';
 export const EDIT_CAR_ACTION = 'EDIT_CAR';
 export const CANCEL_CAR_ACTION = 'CANCEL_CAR';
 export const SORT_CARS_ACTION = 'SORT_CARS';
@@ -61,8 +64,7 @@ export const refreshCars = () => {
   // thunk function
   return async (dispatch: Dispatch) => {
     dispatch(createRefreshCarsRequestCarAction());
-    const res = await fetch('http://localhost:3060/cars');
-    const cars = await res.json();
+    const cars = await carsRestClient.all();
     dispatch(createRefreshCarsDoneCarAction(cars));
   };
 };
@@ -98,61 +100,84 @@ export const createAppendCarRequestAction: CreateAppendCarRequestAction = (
 export const appendCar = (car: NewCar) => {
   return async (dispatch: Dispatch<any>) => {
     dispatch(createAppendCarRequestAction(car));
-
-    await fetch('http://localhost:3060/cars', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(car),
-    });
-
+    await carsRestClient.append(car);
     const refreshCarsThunk = refreshCars();
     refreshCarsThunk(dispatch);
-
     //dispatch(refreshCars());
   };
 };
 
-// Existing Car Action
+// Replace Car Request Action
 
-export interface ReplaceCarAction extends Action<typeof REPLACE_CAR_ACTION> {
+export interface ReplaceCarRequestAction
+  extends Action<typeof REPLACE_CAR_REQUEST_ACTION> {
   payload: { car: Car };
 }
 
-export type CreateReplaceCarAction = (car: Car) => ReplaceCarAction;
+export type CreateReplaceCarRequestAction = (
+  car: Car,
+) => ReplaceCarRequestAction;
 
-export function isReplaceCarAction(
+export function isReplaceCarRequestAction(
   action: AnyAction,
-): action is ReplaceCarAction {
-  return action?.type === REPLACE_CAR_ACTION;
+): action is ReplaceCarRequestAction {
+  return action?.type === REPLACE_CAR_REQUEST_ACTION;
 }
 
-export const createReplaceCarAction: CreateReplaceCarAction = (car) => ({
-  type: REPLACE_CAR_ACTION,
+export const createReplaceCarRequestAction: CreateReplaceCarRequestAction = (
+  car,
+) => ({
+  type: REPLACE_CAR_REQUEST_ACTION,
   payload: { car },
 });
 
-// End Existing Car Action
+// End Replace Car Request Action
 
-// Remove Car Action
+// Replace Car Thunk Function
 
-export interface RemoveCarAction extends Action<typeof REMOVE_CAR_ACTION> {
+export const replaceCar = (car: Car) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(createReplaceCarRequestAction(car));
+    await carsRestClient.replace(car);
+    refreshCars()(dispatch);
+  };
+};
+
+// Remove Car RequestAction
+
+export interface RemoveCarRequestAction
+  extends Action<typeof REMOVE_CAR_REQUEST_ACTION> {
   payload: { carId: number };
 }
 
-export type CreateRemoveCarAction = (carId: number) => RemoveCarAction;
+export type CreateRemoveCarRequestAction = (
+  carId: number,
+) => RemoveCarRequestAction;
 
-export function isRemoveCarAction(
+export function isRemoveCarRequestAction(
   action: AnyAction,
-): action is RemoveCarAction {
-  return action.type === REMOVE_CAR_ACTION;
+): action is RemoveCarRequestAction {
+  return action.type === REMOVE_CAR_REQUEST_ACTION;
 }
 
-export const createRemoveCarAction: CreateRemoveCarAction = (carId) => ({
-  type: REMOVE_CAR_ACTION,
+export const createRemoveCarRequestAction: CreateRemoveCarRequestAction = (
+  carId,
+) => ({
+  type: REMOVE_CAR_REQUEST_ACTION,
   payload: { carId },
 });
 
-// End Remove Action
+// End Remove Car Request Action
+
+// Remove Car Thunk Function
+
+export const removeCar = (carId: number) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(createRemoveCarRequestAction(carId));
+    await carsRestClient.remove(carId);
+    refreshCars()(dispatch);
+  };
+};
 
 // Edit Car Action
 

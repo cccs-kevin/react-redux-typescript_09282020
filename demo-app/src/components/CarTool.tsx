@@ -3,6 +3,7 @@ import React from 'react';
 import { ToolHeader } from './ToolHeader';
 import { CarTable } from './CarTable';
 import { CarForm } from './CarForm';
+import { ModalDialog } from './ModalDialog';
 import { CarToolState } from '../models/carToolStore';
 import { Car, CarKeys, NewCar } from '../models/car';
 
@@ -32,7 +33,6 @@ export function CarTool(props: CarToolProps) {
   } = props;
   return (
     <>
-      {isLoading && <div>Calling the REST API</div>}
       <ToolHeader headerText="Car Tool" />
       <button type="button" onClick={refreshCars}>
         Refresh Cars
@@ -48,6 +48,7 @@ export function CarTool(props: CarToolProps) {
         onSortCars={sortCars}
       />
       <CarForm buttonText="Add Car" onSubmitCar={addCar} />
+      {isLoading && <ModalDialog>Please wait...</ModalDialog>}
     </>
   );
 }
